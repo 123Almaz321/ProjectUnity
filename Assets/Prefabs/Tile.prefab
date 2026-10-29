@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 1725364354802367039}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: 2.57, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 5, y: 1, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -914,6 +914,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TileController
   _hoverHeight: 0.2
   _hoverSpeed: 20
+  _signHeight: 0.05
+  _crossPrefab: {fileID: 3108965755997787910, guid: adb2aec2809b5b841ade4efa6d3d74c1, type: 3}
+  _circlePrefab: {fileID: 6986696763650705115, guid: 5a5ab1b8c2b51354c84a0fa7afbc8fc6, type: 3}
 --- !u!33 &7615628432620699379
 MeshFilter:
   m_ObjectHideFlags: 0
