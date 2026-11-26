@@ -17,13 +17,20 @@ public class TileController : MonoBehaviour
     private void Start()
     {
         _startPos = transform.localPosition;
+        GameManager.Instance.OnMarkPlaced += HandleMarkPlaced;
+    }
+
+    private void OnDestroy()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnMarkPlaced -= HandleMarkPlaced;
     }
 
     private void Update()
     {
         Vector3 targetPosition = _startPos;
 
-        if (_isHovered && !_hasSign && !GameManager.Instance.GameOver)
+        if (_isHovered && CanInteract())
             targetPosition += Vector3.up * _hoverHeight;
 
         transform.localPosition = Vector3.Lerp(
@@ -33,29 +40,31 @@ public class TileController : MonoBehaviour
         );
     }
 
+    private bool CanInteract()
+    {
+        return GameManager.Instance != null
+            && !_hasSign
+            && GameManager.Instance.CanPlace;
+    }
+
     private void OnMouseDown()
     {
-        if(!GameManager.Instance.GameOver)
-        {    if (_hasSign || GameManager.Instance == null)
-                return;
+        if (!CanInteract())
+            return;
 
-            int player = GameManager.Instance.GetCurrentPlayer();
-
-            SpawnSign(player);
-            _hasSign = true;
-
-            GameManager.Instance.MakeMove(_index);
-        }
+        GameManager.Instance.PlaceMark(_index);
     }
 
-    private void OnMouseEnter()
-    {
-        _isHovered = true;
-    }
+    private void OnMouseEnter() => _isHovered = true;
+    private void OnMouseExit() => _isHovered = false;
 
-    private void OnMouseExit()
+    private void HandleMarkPlaced(int cell, int player)
     {
+        if (cell != _index) return;
+
+        _hasSign = true;
         _isHovered = false;
+        SpawnSign(player);
     }
 
     private void SpawnSign(int player)
@@ -65,6 +74,6 @@ public class TileController : MonoBehaviour
         Vector3 spawnPosition = transform.parent.TransformPoint(_startPos);
         spawnPosition += Vector3.up * _signHeight;
 
-        Instantiate(prefab, spawnPosition, Quaternion.identity);
+        Instantiate(prefab, spawnPosition, Quaternion.identity, GameManager.Instance.BoardRootTransform);
     }
 }
